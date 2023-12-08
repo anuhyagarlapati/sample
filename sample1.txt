@@ -1,2 +1,21 @@
 Hello, This is Devops Lab
 
+FROM fedora
+RUN yum install java -y
+RUN mkdir /opt/tomcat
+WORKDIR /opt/tomcat
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz .
+run tar -xvzf apache-tomcat-9.0.83.tar.gz
+RUN mv apache-tomcat-9.0.83/* /opt/tomcat
+EXPOSE 8080
+CMD ["/opt/tomcat/bin/catalina.sh","run"]
+
+M2_HOME=/opt/maven
+M2=/opt/maven/bin
+JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto.x86_64
+PATH=$PATH:$HOME/bin:$M2_HOME:$M2:$JAVA_HOME
+
+FROM  tomcat
+RUN cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
+COPY ./*.war /usr/local/tomcat/webapps
+
